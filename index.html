@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Programme</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e0e;
+  --card: #1a1a1a;
+  --border: #272727;
+  --accent: #d4ff47;
+  --accent-dim: rgba(212,255,71,0.08);
+  --accent-border: rgba(212,255,71,0.2);
+  --text: #efefef;
+  --muted: #777;
+  --push-c: #ff6b35;
+  --pull-c: #4a9eff;
+  --legs-c: #a855f7;
+  --cardio-c: #f59e0b;
+  --push-bg: rgba(255,107,53,0.10);
+  --pull-bg: rgba(74,158,255,0.10);
+  --legs-bg: rgba(168,85,247,0.10);
+  --cardio-bg: rgba(245,158,11,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding:24px 16px 60px;}
+
+.header{max-width:600px;margin:0 auto 40px;padding-top:30px;}
+.top-line{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.badge{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;}
+.today-badge{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#0e0e0e;background:var(--accent);padding:4px 10px;border-radius:20px;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,14vw,96px);line-height:0.88;letter-spacing:2px;}
+h1 .yellow{color:var(--accent);}
+.subhead{margin-top:14px;font-size:13px;color:var(--muted);line-height:1.6;}
+.subhead strong{color:#aaa;font-weight:500;}
+.equip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;}
+.equip-pill{font-size:11px;font-weight:500;color:#bbb;background:#1e1e1e;border:1px solid #2e2e2e;padding:5px 12px;border-radius:20px;}
+
+.divider{max-width:600px;margin:0 auto 32px;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);}
+.section-label{max-width:600px;margin:0 auto 14px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+
+.cycle{max-width:600px;margin:0 auto 36px;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.cyc-day{padding:12px 4px 10px;border-radius:10px;text-align:center;border:1px solid transparent;transition:transform .15s;}
+.cyc-day:hover{transform:translateY(-3px);}
+.cyc-day .cn{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;display:block;}
+.cyc-day .ct{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-top:4px;}
+.cyc-push{background:var(--push-bg);border-color:rgba(255,107,53,0.25);color:var(--push-c);}
+.cyc-pull{background:var(--pull-bg);border-color:rgba(74,158,255,0.25);color:var(--pull-c);}
+.cyc-legs{background:var(--legs-bg);border-color:rgba(168,85,247,0.25);color:var(--legs-c);}
+.cyc-rest{background:#181818;border-color:#252525;color:#3a3a3a;}
+.cyc-cardio{background:var(--cardio-bg);border-color:rgba(245,158,11,0.25);color:var(--cardio-c);}
+.dot-cardio{background:var(--cardio-c);}
+.cyc-today{outline:2px solid var(--accent);outline-offset:2px;}
+.cyc-today .ct{color:var(--accent);}
+
+.sessions{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .2s;}
+.scard:hover{border-color:#333;}
+.scard.today-card{border-color:rgba(212,255,71,0.35);box-shadow:0 0 30px rgba(212,255,71,0.05);}
+.scard-head{padding:18px 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.scard-left{display:flex;align-items:center;gap:12px;}
+.scard-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dot-push{background:var(--push-c);}
+.dot-pull{background:var(--pull-c);}
+.dot-legs{background:var(--legs-c);}
+.scard-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;line-height:1;}
+.scard-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.scard-right{display:flex;align-items:center;gap:10px;}
+.today-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#0e0e0e;background:var(--accent);padding:3px 9px;border-radius:20px;}
+.chevron{color:var(--muted);font-size:18px;transition:transform .25s;opacity:0.5;}
+.scard.open .chevron{transform:rotate(180deg);}
+.scard-body{display:none;padding:0 20px 20px;}
+.scard.open .scard-body{display:block;}
+
+.exo-table{width:100%;border-collapse:collapse;margin-top:16px;}
+.exo-table th{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:600;padding:0 0 10px;text-align:left;border-bottom:1px solid var(--border);}
+.exo-table th:not(:first-child){text-align:center;}
+.exo-table td{padding:12px 0;border-bottom:1px solid #1f1f1f;vertical-align:top;}
+.exo-table tr:last-child td{border-bottom:none;}
+.exo-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.3;}
+.exo-tip{font-size:11px;color:var(--muted);margin-top:3px;font-style:italic;}
+.exo-equip{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#888;background:#202020;padding:2px 7px;border-radius:10px;margin-top:4px;}
+.sets-cell{text-align:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);}
+.reps-cell{text-align:center;font-size:12px;font-weight:600;color:var(--muted);line-height:1.4;}
+.rest-cell{text-align:center;font-size:11px;color:var(--muted);}
+
+.note-block{margin-top:16px;background:rgba(255,255,255,0.03);border:1px solid #232323;border-radius:10px;padding:12px 14px;}
+.note-block p{font-size:12px;color:#999;line-height:1.6;}
+.note-block strong{color:#ccc;}
+.abdo-title{margin-top:18px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+
+.prog-section{max-width:600px;margin:36px auto 0;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.prog-section h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:14px;color:var(--accent);}
+.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.prog-item{background:#111;border:1px solid #222;border-radius:10px;padding:12px 14px;}
+.prog-item .pi-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.prog-item .pi-val{font-size:13px;font-weight:400;color:#ccc;line-height:1.55;}
+
+.footer{max-width:600px;margin:40px auto 0;text-align:center;font-size:11px;color:#444;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="top-line">
+    <span class="badge">Programme Perso</span>
+    <span class="today-badge">● En cours</span>
+  </div>
+  <h1>FIT<br><span class="yellow">PLAN</span></h1>
+  <p class="subhead">
+    Cycle <strong>2 jours entraînement / 1 jour repos</strong> &middot; Séances de 45 min<br>
+    Objectif <strong>mix muscle + sèche</strong> &middot; Entraînement à domicile
+  </p>
+  <div class="equip-row">
+    <span class="equip-pill">🏋️ Barre + Poids (100kg)</span>
+    <span class="equip-pill">💪 Haltères</span>
+    <span class="equip-pill">🪑 Banc plat</span>
+    <span class="equip-pill">🤸 Poignées pompes</span>
+    <span class="equip-pill">🔴 Élastiques 10/20/30kg</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<p class="section-label">Cycle hebdomadaire</p>
+<div class="cycle" style="grid-template-columns:repeat(7,1fr);">
+  <div class="cyc-day cyc-push cyc-today">
+    <span class="cn">J1</span><span class="ct">Push</span>
+  </div>
+  <div class="cyc-day cyc-pull">
+    <span class="cn">J2</span><span class="ct">Pull</span>
+  </div>
+  <div class="cyc-day cyc-rest">
+    <span class="cn">—</span><span class="ct">Repos</span>
+  </div>
+  <div class="cyc-day cyc-legs">
+    <span class="cn">J3</span><span class="ct">Legs</span>
+  </div>
+  <div class="cyc-day cyc-rest">
+    <span class="cn">—</span><span class="ct">Repos</span>
+  </div>
+  <div class="cyc-day cyc-cardio">
+    <span class="cn">J4</span><span class="ct">Cardio</span>
+  </div>
+  <div class="cyc-day cyc-rest">
+    <span class="cn">—</span><span class="ct">Repos</span>
+  </div>
+</div>
+
+<div class="sessions">
+
+  <!-- PUSH (TODAY) -->
+  <div class="scard today-card open" id="s-push">
+    <div class="scard-head" onclick="toggle('s-push')">
+      <div class="scard-left">
+        <div class="scard-dot dot-push"></div>
+        <div>
+          <div class="scard-title">Pecs + Épaules + Triceps</div>
+          <div class="scard-meta">Séance PUSH · ~45 min · Banc, barre, élastiques, poignées</div>
+        </div>
+      </div>
+      <div class="scard-right">
+        <span class="today-tag">Aujourd'hui</span>
+        <span class="chevron">⌄</span>
+      </div>
+    </div>
+    <div class="scard-body">
+      <table class="exo-table">
+        <thead><tr><th style="width:52%">Exercice</th><th>Séries</th><th>Reps</th><th>Repos</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="exo-name">Développé couché barre</div>
+              <div class="exo-tip">Prise légèrement plus large que les épaules, descendre à la poitrine</div>
+              <span class="exo-equip">🪑 Banc + 🏋️ Barre</span>
+            </td>
+            <td class="sets-cell">4</td><td class="reps-cell">8–10</td><td class="rest-cell">90s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Pompes poignées — prise large</div>
+              <div class="exo-tip">Mains écartées (>épaules) → pecs extérieurs. Descends profond grâce aux poignées</div>
+              <span class="exo-equip">🤸 Poignées pompes</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">Max<br><span style="font-size:10px;color:#555">(viser 10+)</span></td><td class="rest-cell">75s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Développé épaules haltères assis</div>
+              <div class="exo-tip">Assis sur le banc, coudes à 90° au départ, pousser en arc au-dessus</div>
+              <span class="exo-equip">💪 Haltères + 🪑 Banc</span>
+            </td>
+            <td class="sets-cell">4</td><td class="reps-cell">10–12</td><td class="rest-cell">75s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Élévations latérales haltères</div>
+              <div class="exo-tip">Bras presque tendus, monter à l'horizontale. Contrôler la descente</div>
+              <span class="exo-equip">💪 Haltères légers</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">12–15</td><td class="rest-cell">60s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Oiseau élastique (épaule postérieure)</div>
+              <div class="exo-tip">Élastique fixé devant toi à hauteur de poitrine, tirer en croix — épaule arrière souvent négligée</div>
+              <span class="exo-equip">🔴 Élastique 10–20kg</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">15</td><td class="rest-cell">60s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Extensions triceps élastique debout</div>
+              <div class="exo-tip">Élastique sous le pied, bras au-dessus de la tête, fléchir et étendre</div>
+              <span class="exo-equip">🔴 Élastique 20–30kg</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">12–15</td><td class="rest-cell">60s</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="abdo-title">Abdos finaux — 5 min</div>
+      <table class="exo-table">
+        <tbody>
+          <tr>
+            <td><div class="exo-name">Crunchs</div></td>
+            <td class="sets-cell">3</td><td class="reps-cell">20</td><td class="rest-cell">30s</td>
+          </tr>
+          <tr>
+            <td><div class="exo-name">Gainage planche</div></td>
+            <td class="sets-cell">3</td><td class="reps-cell">30–45s</td><td class="rest-cell">30s</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note-block">
+        <p>💡 <strong>Échauffement :</strong> 5 min de rotations d'épaules + 10 pompes lentes sans poignées + 1 série légère de développé couché à vide avant de charger.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PULL -->
+  <div class="scard" id="s-pull">
+    <div class="scard-head" onclick="toggle('s-pull')">
+      <div class="scard-left">
+        <div class="scard-dot dot-pull"></div>
+        <div>
+          <div class="scard-title">Dos + Biceps</div>
+          <div class="scard-meta">Séance PULL · ~45 min · Barre, haltères, élastiques, poignées</div>
+        </div>
+      </div>
+      <div class="scard-right"><span class="chevron">⌄</span></div>
+    </div>
+    <div class="scard-body">
+      <table class="exo-table">
+        <thead><tr><th style="width:52%">Exercice</th><th>Séries</th><th>Reps</th><th>Repos</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="exo-name">Rowing barre penché avant</div>
+              <div class="exo-tip">Dos à 45°, dos plat, tirer la barre vers le nombril — grand dorsal + rhomboïdes</div>
+              <span class="exo-equip">🏋️ Barre</span>
+            </td>
+            <td class="sets-cell">4</td><td class="reps-cell">8–10</td><td class="rest-cell">90s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Pompes poignées — prise serrée</div>
+              <div class="exo-tip">Mains à largeur d'épaules ou moins → sollicite davantage les rhomboïdes et l'arrière du bras</div>
+              <span class="exo-equip">🤸 Poignées pompes</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">Max</td><td class="rest-cell">75s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Tirage élastique assis</div>
+              <div class="exo-tip">Élastique fixé bas, assis au sol, tirer vers la ceinture en gardant le buste droit</div>
+              <span class="exo-equip">🔴 Élastique 20–30kg</span>
+            </td>
+            <td class="sets-cell">4</td><td class="reps-cell">12–15</td><td class="rest-cell">60s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Curl haltères alterné</div>
+              <div class="exo-tip">Supination en haut (tourner la paume vers toi au sommet du mouvement)</div>
+              <span class="exo-equip">💪 Haltères</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">10–12</td><td class="rest-cell">60s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Curl marteau haltères</div>
+              <div class="exo-tip">Prise neutre (pouce vers le haut) — brachial + avant-bras</div>
+              <span class="exo-equip">💪 Haltères</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">12</td><td class="rest-cell">60s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Curl élastique debout (tempo lent)</div>
+              <div class="exo-tip">Élastique sous les pieds, tempo 3–1–3 pour brûler le biceps</div>
+              <span class="exo-equip">🔴 Élastique 10–20kg</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">15</td><td class="rest-cell">45s</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="abdo-title">Abdos finaux — 5 min</div>
+      <table class="exo-table">
+        <tbody>
+          <tr>
+            <td><div class="exo-name">Relevés de jambes allongé</div></td>
+            <td class="sets-cell">3</td><td class="reps-cell">15</td><td class="rest-cell">30s</td>
+          </tr>
+          <tr>
+            <td><div class="exo-name">Bicycle crunch</div></td>
+            <td class="sets-cell">3</td><td class="reps-cell">20/côté</td><td class="rest-cell">30s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LEGS -->
+  <div class="scard" id="s-legs">
+    <div class="scard-head" onclick="toggle('s-legs')">
+      <div class="scard-left">
+        <div class="scard-dot dot-legs"></div>
+        <div>
+          <div class="scard-title">Jambes + Fessiers + Abdos</div>
+          <div class="scard-meta">Séance LEGS · ~45 min · Barre, haltères, élastiques, banc</div>
+        </div>
+      </div>
+      <div class="scard-right"><span class="chevron">⌄</span></div>
+    </div>
+    <div class="scard-body">
+      <table class="exo-table">
+        <thead><tr><th style="width:52%">Exercice</th><th>Séries</th><th>Reps</th><th>Repos</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="exo-name">Squat barre</div>
+              <div class="exo-tip">Descendre à 90° minimum, genoux dans l'axe des pieds, dos droit</div>
+              <span class="exo-equip">🏋️ Barre</span>
+            </td>
+            <td class="sets-cell">4</td><td class="reps-cell">8–10</td><td class="rest-cell">90s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Fentes avant haltères</div>
+              <div class="exo-tip">Genou avant à 90°, genou arrière effleure le sol</div>
+              <span class="exo-equip">💪 Haltères</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">10/jambe</td><td class="rest-cell">75s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Soulevé de terre roumain haltères</div>
+              <div class="exo-tip">Dos plat, descendre le long des jambes jusqu'à sentir l'étirement — ischio</div>
+              <span class="exo-equip">💪 Haltères</span>
+            </td>
+            <td class="sets-cell">3</td><td class="reps-cell">12</td><td class="rest-cell">75s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Hip thrust élastique</div>
+              <div class="exo-tip">Dos sur le banc, élastique sur les cuisses, pousser les hanches vers le haut — fessiers</div>
+              <span class="exo-equip">🪑 Banc + 🔴 Élastique 20–30kg</span>
+            </td>
+            <td class="sets-cell">4</td><td class="reps-cell">15</td><td class="rest-cell">60s</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="exo-name">Mollets debout lestés</div>
+              <div class="exo-tip">Haltères en mains, monter sur la pointe des pieds lentement sur une marche si possible</div>
+              <span class="exo-equip">💪 Haltères</span>
+            </td>
+            <td class="sets-cell">4</td><td class="reps-cell">15–20</td><td class="rest-cell">45s</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="abdo-title">Abdos finaux — 5 min</div>
+      <table class="exo-table">
+        <tbody>
+          <tr>
+            <td><div class="exo-name">Gainage latéral</div></td>
+            <td class="sets-cell">3</td><td class="reps-cell">30s/côté</td><td class="rest-cell">30s</td>
+          </tr>
+          <tr>
+            <td><div class="exo-name">Mountain climbers</div></td>
+            <td class="sets-cell">3</td><td class="reps-cell">20/côté</td><td class="rest-cell">30s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- CARDIO -->
+  <div class="scard" id="s-cardio">
+    <div class="scard-head" onclick="toggle('s-cardio')">
+      <div class="scard-left">
+        <div class="scard-dot dot-cardio"></div>
+        <div>
+          <div class="scard-title">Cardio — Course à pied</div>
+          <div class="scard-meta">Séance CARDIO · 3 variantes en rotation · Niveau intermédiaire</div>
+        </div>
+      </div>
+      <div class="scard-right"><span class="chevron">⌄</span></div>
+    </div>
+    <div class="scard-body">
+
+      <!-- SEMAINE A -->
+      <div class="abdo-title" style="margin-top:16px;">🔁 Rotation 3 séances (répéter en boucle)</div>
+
+      <div class="note-block" style="margin-top:10px;">
+        <p>
+          <strong style="color:var(--cardio-c);">Séance A — Footing facile</strong><br>
+          30–35 min à allure confortable (tu peux parler). Fréquence cardiaque ~65–70% max.<br>
+          <strong>Objectif :</strong> récupération active + brûler les graisses sur la durée.
+        </p>
+      </div>
+
+      <div class="note-block" style="margin-top:10px;">
+        <p>
+          <strong style="color:var(--cardio-c);">Séance B — Intervalles (HIIT léger)</strong><br>
+          5 min échauffement · puis <strong>8 × (1 min rapide / 1 min30 marche)</strong> · 5 min retour au calme.<br>
+          Total ~30 min. Sprint à ~80–85% de ton max, pas à fond.<br>
+          <strong>Objectif :</strong> brûler des calories, booster le métabolisme post-effort.
+        </p>
+      </div>
+
+      <div class="note-block" style="margin-top:10px;">
+        <p>
+          <strong style="color:var(--cardio-c);">Séance C — Tempo run</strong><br>
+          5 min échauffement · <strong>20 min à allure "difficile mais tenable"</strong> (tu peux dire 3 mots) · 5 min cool down.<br>
+          Total ~30 min. Fréquence cardiaque ~75–80% max.<br>
+          <strong>Objectif :</strong> améliorer l'endurance et la vitesse de base.
+        </p>
+      </div>
+
+      <div class="note-block" style="margin-top:12px;">
+        <p>💡 <strong>Progression :</strong> Toutes les 3–4 semaines, augmente la durée du footing de 5 min OU ajoute 2 intervalles en séance B. Ne fais jamais 2 séances C de suite.</p>
+      </div>
+
+      <div class="abdo-title" style="margin-top:18px;">Avant / Après chaque course</div>
+      <table class="exo-table">
+        <tbody>
+          <tr>
+            <td><div class="exo-name">Échauffement marche rapide</div><div class="exo-tip">3–5 min avant de courir — prépare les articulations</div></td>
+            <td class="sets-cell" style="font-size:14px;color:var(--muted);">3–5 min</td>
+            <td class="reps-cell">—</td>
+            <td class="rest-cell">—</td>
+          </tr>
+          <tr>
+            <td><div class="exo-name">Étirements statiques</div><div class="exo-tip">Quadriceps, ischio, mollets, hanches — après la course uniquement</div></td>
+            <td class="sets-cell" style="font-size:14px;color:var(--muted);">5 min</td>
+            <td class="reps-cell">30s<br>par muscle</td>
+            <td class="rest-cell">—</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- CONSEILS -->
+<div class="prog-section">
+  <h3>Conseils &amp; Progression</h3>
+  <div class="prog-grid">
+    <div class="prog-item">
+      <div class="pi-label">📈 Progression</div>
+      <div class="pi-val">Augmente le poids dès que tu atteins les reps hautes facilement sur 2 séances consécutives.</div>
+    </div>
+    <div class="prog-item">
+      <div class="pi-label">🍽️ Nutrition</div>
+      <div class="pi-val">Léger déficit calorique. Protéines élevées (~1,8g/kg). Glucides autour des séances. Évite les ultra-transformés.</div>
+    </div>
+    <div class="prog-item">
+      <div class="pi-label">😴 Récupération</div>
+      <div class="pi-val">Le muscle se construit au repos. Respecte les jours off. 7–8h de sommeil. 2L d'eau/jour minimum.</div>
+    </div>
+    <div class="prog-item">
+      <div class="pi-label">🎯 Abdos visibles</div>
+      <div class="pi-val">Ça se joue en cuisine. Les jours repos : 20–30 min de marche rapide ou vélo pour accélérer la perte de gras.</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer"><p>Programme évolutif — À réévaluer toutes les 6–8 semaines</p></div>
+
+<script>
+function toggle(id){
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+</body>
+</html>
